@@ -4,47 +4,80 @@ ini_set("display_errors", "1");
 ini_set("display_startup_errors", "1");
 ini_set('error_reporting',  E_ERROR);
 
-//require_once __DIR__ . '/../prolog.php';
-//phpinfo();
-
-
-
+// Подключение автозагрузчика и базовых классов
+require_once __DIR__ . '/bootstrap.php';
 
 $method = trim($_GET['method']);
 switch ($method) {
     case 'deals_export':
-        require_once 'deals_export_mssql.php';
-        start(2025, 1, 1);
+        $container = createContainer();
+        $exporter = createDealsExporter($container);
+        $result = $exporter->run();
+        header('Content-Type: application/json');
+        echo json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         break;
 
     case 'deals_history_export':
-        require_once 'deals_stage_history_export_mssql.php';
-        start();
+        // TODO: Реализовать экспортер истории сделок
+        header('HTTP/1.1 501 NOT IMPLEMENTED');
+        $output = [
+            "status" => [
+                "code" => 'NOT_IMPLEMENTED',
+                "message" => 'Функционал в разработке',
+                "detailed_message" => 'Экспортер истории сделок будет доступен позже'
+            ]
+        ];
+        echo json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         break;
 
     case 'leads_export':
-        require_once 'leads_export_mssql.php';
-        start();
+        // TODO: Реализовать экспортер лидов
+        header('HTTP/1.1 501 NOT IMPLEMENTED');
+        $output = [
+            "status" => [
+                "code" => 'NOT_IMPLEMENTED',
+                "message" => 'Функционал в разработке',
+                "detailed_message" => 'Экспортер лидов будет доступен позже'
+            ]
+        ];
+        echo json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         break;
 
     case 'users_export':
-        require_once 'users_export_mssql.php';
-        start();
+        // TODO: Реализовать экспортер пользователей
+        header('HTTP/1.1 501 NOT IMPLEMENTED');
+        $output = [
+            "status" => [
+                "code" => 'NOT_IMPLEMENTED',
+                "message" => 'Функционал в разработке',
+                "detailed_message" => 'Экспортер пользователей будет доступен позже'
+            ]
+        ];
+        echo json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         break;
 
     case 'activities_export':
-        require_once 'activities_export_mssql.php';
-        start();
+        // TODO: Реализовать экспортер активностей
+        header('HTTP/1.1 501 NOT IMPLEMENTED');
+        $output = [
+            "status" => [
+                "code" => 'NOT_IMPLEMENTED',
+                "message" => 'Функционал в разработке',
+                "detailed_message" => 'Экспортер активностей будет доступен позже'
+            ]
+        ];
+        echo json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         break;
 
     default:
         header('HTTP/1.1 400 BAD_REQUEST');
-        $output = array(
-            "status" => array(
+        $output = [
+            "status" => [
                 "code" => 'ERROR',
                 "message" => 'BAD_REQUEST',
-                "detailed_message" => 'Вызываемый метод не существует'
-            )
-        );
+                "detailed_message" => 'Вызываемый метод не существует. Доступные методы: deals_export'
+            ]
+        ];
+        echo json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         break;
 }
